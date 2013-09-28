@@ -10,8 +10,7 @@
 	"scripts":{
 		"blanket":{
 			"pattern":[
-				"lib/hapi-plugin.js",
-				"lib/index.js"
+				"lib/hapi-plugin.js"
 			]	
 		}
 	},
@@ -21,7 +20,10 @@
 		"hapi":"1.11.x",
 		"lodash":"2.0.x",
 		"hoek":"1.0.x",
-		"log4js":"0.6.x"
+		"log4js":"0.6.x",
+		"extend":"1.2.x",
+		"runrightfast-commons":"git://github.com/runrightfast/runrightfast-commons.git#0.0.10",
+		"pkginfo":"0.3.x"
 	},
 	"devDependencies":{
 		"grunt":"~0.4.1",

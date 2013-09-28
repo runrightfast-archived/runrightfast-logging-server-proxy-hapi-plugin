@@ -17,3 +17,102 @@
 
 var expect = require('chai').expect;
 var Hapi = require('hapi');
+
+var hapiPlugin = require('../lib');
+
+var next = function() {
+	console.log('next');
+};
+
+var Plugin = function() {
+
+	this.select = function() {
+		return this;
+	};
+
+	this.route = function(route) {
+		this._route = route;
+	};
+};
+
+describe('LoggingService Proxy Hapi Plugin', function() {
+
+	it('can register the plugin if the options pass validation', function() {
+		var options = {
+			proxy : {
+				host : 'localhost',
+				port : 8000
+			},
+			logLevel : 'DEBUG'
+		};
+
+		var plugin = new Plugin();
+		hapiPlugin.register(plugin, options, next);
+		console.log(plugin._route);
+	});
+
+	it('validates that if a mapUri option is specified then it checks that is a function', function(done) {
+		var options = {
+			proxy : {
+				mapUri : function() {
+					return 'http://localhost:8080/api/logging-service/log';
+				}
+			},
+			logLevel : 'DEBUG'
+		};
+
+		var plugin = new Plugin();
+		hapiPlugin.register(plugin, options, next);
+		console.log(plugin._route);
+
+		var optionsInvalid = {
+			proxy : {
+				mapUri : 123
+			},
+			logLevel : 'DEBUG'
+		};
+
+		try {
+			hapiPlugin.register(new Plugin(), optionsInvalid, next);
+			done(new Error('expected options to be invalid because mapUri is not a function'));
+		} catch (error) {
+			done();
+		}
+
+	});
+
+	it('validates that if a postResponse option is specified then it checks that is a function', function(done) {
+		var options = {
+			proxy : {
+				host : 'localhost',
+				port : 8000,
+				postResponse : function() {
+					console.log('postResponse');
+				}
+			},
+			logLevel : 'DEBUG',
+			serverLabels : 'api'
+		};
+
+		var plugin = new Plugin();
+		hapiPlugin.register(plugin, options, next);
+		console.log(plugin._route);
+
+		var optionsInvalid = {
+			proxy : {
+				host : 'localhost',
+				port : 8000,
+				postResponse : 123
+			},
+			logLevel : 'DEBUG'
+		};
+
+		try {
+			hapiPlugin.register(new Plugin(), optionsInvalid, next);
+			done(new Error('expected options to be invalid because postResponse is not a function'));
+		} catch (error) {
+			done();
+		}
+
+	});
+});
