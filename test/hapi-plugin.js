@@ -18,26 +18,10 @@
 var expect = require('chai').expect;
 var Hapi = require('hapi');
 
-var hapiPlugin = require('../lib');
-
-var next = function() {
-	console.log('next');
-};
-
-var Plugin = function() {
-
-	this.select = function() {
-		return this;
-	};
-
-	this.route = function(route) {
-		this._route = route;
-	};
-};
-
 describe('LoggingService Proxy Hapi Plugin', function() {
 
-	it('can register the plugin if the options pass validation', function() {
+	it('can be added as a plugin to hapi', function(done) {
+
 		var options = {
 			proxy : {
 				host : 'localhost',
@@ -46,9 +30,11 @@ describe('LoggingService Proxy Hapi Plugin', function() {
 			logLevel : 'DEBUG'
 		};
 
-		var plugin = new Plugin();
-		hapiPlugin.register(plugin, options, next);
-		console.log(plugin._route);
+		var server = new Hapi.Server();
+		server.pack.require('../', options, function(err) {
+			expect(err).to.not.exist;
+			done();
+		});
 	});
 
 	it('validates that if a mapUri option is specified then it checks that is a function', function(done) {
@@ -61,23 +47,11 @@ describe('LoggingService Proxy Hapi Plugin', function() {
 			logLevel : 'DEBUG'
 		};
 
-		var plugin = new Plugin();
-		hapiPlugin.register(plugin, options, next);
-		console.log(plugin._route);
-
-		var optionsInvalid = {
-			proxy : {
-				mapUri : 123
-			},
-			logLevel : 'DEBUG'
-		};
-
-		try {
-			hapiPlugin.register(new Plugin(), optionsInvalid, next);
-			done(new Error('expected options to be invalid because mapUri is not a function'));
-		} catch (error) {
+		var server = new Hapi.Server();
+		server.pack.require('../', options, function(err) {
+			expect(err).to.not.exist;
 			done();
-		}
+		});
 
 	});
 
@@ -94,23 +68,32 @@ describe('LoggingService Proxy Hapi Plugin', function() {
 			serverLabels : 'api'
 		};
 
-		var plugin = new Plugin();
-		hapiPlugin.register(plugin, options, next);
-		console.log(plugin._route);
+		var server = new Hapi.Server();
+		server.pack.require('../', options, function(err) {
+			expect(err).to.not.exist;
+			done();
+		});
+	});
 
-		var optionsInvalid = {
+	it('if a postResponse option is not a function, then it will fail to be added as a Hapi plugin', function(done) {
+		var options = {
 			proxy : {
 				host : 'localhost',
 				port : 8000,
-				postResponse : 123
+				postResponse : 'INVALID OPTION'
 			},
 			logLevel : 'DEBUG'
 		};
 
+		var server = new Hapi.Server();
+
 		try {
-			hapiPlugin.register(new Plugin(), optionsInvalid, next);
-			done(new Error('expected options to be invalid because postResponse is not a function'));
-		} catch (error) {
+			server.pack.require('../', options, function(err) {
+				expect(err).to.exist;
+				done();
+			});
+			done(new Error('expected an Error because proxy.postResponse is not a Function'));
+		} catch (err) {
 			done();
 		}
 
