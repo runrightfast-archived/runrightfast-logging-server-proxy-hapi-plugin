@@ -1,6 +1,6 @@
 {
 	"name":"runrightfast-logging-server-proxy-hapi-plugin",
-	"version":"0.0.1",
+	"version":"0.0.2",
 	"description":"RunRightFast Logging Service Hapi Plugin",
 	"repository":{
 		"type":"git",
