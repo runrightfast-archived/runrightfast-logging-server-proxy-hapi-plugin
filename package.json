@@ -1,6 +1,6 @@
 {
 	"name":"runrightfast-logging-server-proxy-hapi-plugin",
-	"version":"0.0.5",
+	"version":"0.0.6",
 	"description":"RunRightFast Logging Server Proxy Hapi Plugin",
 	"repository":{
 		"type":"git",
@@ -18,9 +18,9 @@
 	"author":"Alfio Zappala",
 	"license":"Apache v2",
 	"dependencies":{
-		"hapi":"1.12.x",
+		"hapi":"1.13.x",
 		"lodash":"2.2.x",
-		"hoek":"1.0.x",
+		"hoek":"1.1.x",
 		"log4js":"0.6.x",
 		"extend":"1.2.x",
 		"runrightfast-commons":"git://github.com/runrightfast/runrightfast-commons.git#0.0.11",
